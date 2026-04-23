@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔬 בדיקת UNAUTHORIZED_DOMAIN</title>
+<style>
+*{box-sizing:border-box}
+body{background:linear-gradient(180deg,#0a0805,#1a0f05);color:#fff;font-family:-apple-system,sans-serif;margin:0;padding:18px;direction:rtl;min-height:100vh}
+.box{max-width:520px;margin:0 auto}
+h1{color:#fbab20;font-size:22px;margin:0 0 6px;text-align:center}
+.sub{color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;text-align:center;line-height:1.5}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px;color:#fcd34d}
+.field input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:11px;font-size:13px;font-family:monospace}
+.btn{display:block;width:100%;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:800;margin:8px 0;box-shadow:0 4px 16px rgba(249,115,22,0.35);font-family:inherit;cursor:pointer}
+.btn.green{background:linear-gradient(135deg,#10b981,#059669)}
+.btn.purple{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+.result{background:rgba(0,0,0,0.4);border:1px solid rgba(124,58,237,0.4);border-radius:10px;padding:14px;margin-top:10px;font-size:11.5px;font-family:monospace;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left;min-height:60px;color:#ddd6fe}
+.result.pass{border-color:#10b981;background:rgba(16,185,129,0.08);color:#6ee7b7}
+.result.fail{border-color:#ef4444;background:rgba(239,68,68,0.08);color:#fca5a5}
+.warn{background:rgba(251,171,32,0.08);border:1px solid rgba(251,171,32,0.3);border-radius:10px;padding:11px;margin-bottom:12px;font-size:12px;color:#fcd34d;line-height:1.55}
+.warn b{color:#fef3c7}
+</style>
+</head>
+<body><div class="box">
+
+<h1>🔬 מה בדיוק שולחים ל-Firebase?</h1>
+<div class="sub">נבדוק כל continueUrl אפשרי ונראה איזה Firebase מקבל/דוחה</div>
+
+<div class="warn">
+<b>הרעיון:</b> אנחנו שולחים 4 ניסיונות של sendOobCode עם continueUrls שונים. מה שעובד = מה שצריך להיות בקוד. מה שלא = זה הבעיה.
+</div>
+
+<div class="field">
+  <label>📧 Email (של הודיה)</label>
+  <input type="email" id="em" value="pinto1212121212@gmail.com">
+</div>
+
+<button class="btn" id="go" onclick="runAll()">🧪 בצע 4 ניסיונות</button>
+
+<div id="results"></div>
+
+</div>
+
+<script>
+const KEY='AIzaSyCsh6qM-WgbWn1LHx2FTVio35ZPvMQ0aG4';
+
+async function testContinueUrl(continueUrl, label){
+  const email = document.getElementById('em').value.trim();
+  try{
+    const t0=Date.now();
+    const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key='+KEY,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        requestType:'PASSWORD_RESET',
+        email,
+        continueUrl
+      })
+    });
+    const elapsed=Date.now()-t0;
+    const d=await r.json();
+    return {
+      label,
+      url:continueUrl,
+      ok:r.ok,
+      status:r.status,
+      elapsed,
+      response:d
+    };
+  }catch(e){
+    return {label,url:continueUrl,ok:false,status:0,error:e.message};
+  }
+}
+
+async function runAll(){
+  document.getElementById('go').disabled=true;
+  document.getElementById('go').textContent='⏳ בודק...';
+  document.getElementById('results').innerHTML='';
+  
+  const tests = [
+    ['1. הודיה - ללא סלש',        'https://pinto1212121212-create.github.io/diary-hodaya'],
+    ['2. הודיה - עם סלש',          'https://pinto1212121212-create.github.io/diary-hodaya/'],
+    ['3. רינת/דניאל - עם סלש',    'https://pinto1212121212-create.github.io/Mm.ll/'],
+    ['4. Router - ריק',            'https://pinto1212121212-create.github.io/reset-router/']
+  ];
+  
+  const resultsEl = document.getElementById('results');
+  for(const [label, url] of tests){
+    resultsEl.insertAdjacentHTML('beforeend', 
+      '<div class="result" style="color:#fbab20">⏳ ' + label + ': ' + url + '</div>'
+    );
+    const res = await testContinueUrl(url, label);
+    const divs = resultsEl.querySelectorAll('.result');
+    const lastDiv = divs[divs.length-1];
+    
+    let text = (res.ok?'✅ PASS':'❌ FAIL')+' '+res.label+'\n';
+    text += 'URL: '+res.url+'\n';
+    text += 'Status: HTTP '+res.status;
+    if(res.elapsed)text += ' ('+res.elapsed+'ms)';
+    text += '\n';
+    if(res.response){
+      if(res.response.error){
+        text += 'Error: '+(res.response.error.message||'')+'\n';
+      }else if(res.response.email){
+        text += 'Email returned: '+res.response.email+'\n';
+      }
+    }
+    if(res.error)text += 'Exception: '+res.error+'\n';
+    
+    lastDiv.textContent = text;
+    lastDiv.className = 'result ' + (res.ok ? 'pass' : 'fail');
+    
+    // Small delay between tests to avoid rate limit
+    await new Promise(r=>setTimeout(r,500));
+  }
+  
+  document.getElementById('go').disabled=false;
+  document.getElementById('go').textContent='🔄 הרץ שוב';
+  
+  // Add summary
+  resultsEl.insertAdjacentHTML('beforeend',
+    '<div style="margin-top:14px;padding:12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:10px;font-size:13px;line-height:1.6;color:#c4b5fd">💡 <b>פענוח:</b><br>• אם 2 עובד ו-1 לא → זה "חסר סלש" - קל לתקן<br>• אם 1 ו-2 לא עובדים ו-3 כן → בעיה ספציפית לנתיב diary-hodaya<br>• אם כולם לא עובדים → Authorized domain לא נתפס עדיין<br>• אם כולם עובדים → לא בעיית backend — cache מקומי</div>'
+  );
+}
+</script>
+</body>
+</html>
