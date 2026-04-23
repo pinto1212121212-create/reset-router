@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ð ××¢××¨ ×××¤×××§×¦××...</title>
+<title>🔄 מעבר לאפליקציה...</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%}
@@ -30,15 +30,15 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
 
 <div id="loading-view">
   <div class="spinner"></div>
-  <h1>ð ××¢××¨ ×××¤×××§×¦××...</h1>
-  <div class="sub" id="sub-text">××¢×× ××ª ×××§×©× ×××¢×××¨ ×××ª× ×××¤×××§×¦×× ×× ××× ×</div>
+  <h1>🔄 מעבר לאפליקציה...</h1>
+  <div class="sub" id="sub-text">מעבד את הבקשה ומעביר אותך לאפליקציה הנכונה</div>
   <div class="target" id="target-url" style="display:none"></div>
 </div>
 
 <div id="fallback-view" class="fallback">
-  <div class="fallback-ttl">â ï¸ ××¢××¨ ××××××× × ××©×</div>
+  <div class="fallback-ttl">⚠️ מעבר אוטומטי נכשל</div>
   <div class="fallback-body">
-    ×××¥ ××× ××ª ×¢× ×××¤×××§×¦×× ×××ª××××:
+    לחץ ידנית על האפליקציה המתאימה:
   </div>
   <div id="fallback-buttons" style="margin-top:12px"></div>
   <div class="err" id="err-msg" style="display:none"></div>
@@ -49,8 +49,8 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
 <script>
 (function(){
   // Known apps mapped to their GitHub Pages URLs
-    const APPS = {
-    'Mm.ll': 'https://pinto1212121212-create.github.io/Mm.ll/',
+  const APPS = {
+    'diary-rinat': 'https://pinto1212121212-create.github.io/diary-rinat/',
     'therapy-hodaya': 'https://pinto1212121212-create.github.io/therapy-hodaya/'
   };
   
@@ -82,7 +82,7 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
         const btn = document.createElement('a');
         btn.className = name === 'therapy-hodaya' ? 'btn purple' : 'btn';
         btn.href = url;
-        btn.textContent = 'ð ' + (name === 'therapy-hodaya' ? '××××× ×©× ×××××' : name === 'Mm.ll' ? '××××× ×©×× × (×¨×× ×ª/×× ×××)' : name);
+        btn.textContent = '🔗 ' + (name === 'therapy-hodaya' ? 'היומן של הודיה' : name === 'diary-rinat' ? 'היומן שלנו (רינת/דניאל)' : name);
         buttonsEl.appendChild(btn);
       }
     }
@@ -90,7 +90,7 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
   
   // Validate essentials
   if(!mode || !oobCode){
-    showError('<b>×¤×¨×××¨×× ××¡×¨××</b><br>×××× ×§ ×× ×××× ××ª ××¤×¨××× ×× ××¨×©×× (mode ×× oobCode). ××× ×× ×¨×× ×©×××¨ ×× ××ª××.', true);
+    showError('<b>פרמטרים חסרים</b><br>הלינק לא מכיל את הפרטים הנדרשים (mode או oobCode). הוא כנראה שבור או חתוך.', true);
     return;
   }
   
@@ -113,7 +113,7 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
     targetApp = 'Mm.ll';
     targetUrl = APPS[targetApp];
     document.getElementById('sub-text').innerHTML = 
-      '×× ××××ª× ××¤×××§×¦×× ××××× ×§. ××¢×××¨ ×××¨××¨×ª ××××.<br><small>×× ×× ×× ×××¤×××§×¦×× ×©×¨×¦××ª â ×××¥ ××©××× ×××¤××¡ ×××©.</small>';
+      'לא זוהתה אפליקציה מהלינק. מעביר לברירת מחדל.<br><small>אם זו לא האפליקציה שרצית — לחץ לשלוח איפוס חדש.</small>';
   }
   
   // Build the destination URL with all needed params
@@ -127,12 +127,12 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
   
   // Show target for 1 second, then redirect
   const targetEl = document.getElementById('target-url');
-  targetEl.textContent = 'â ' + (targetApp === 'therapy-hodaya' ? '××××× ×©× ×××××' : targetApp === 'Mm.ll' ? '××××× ×©×× × (×¨×× ×ª/×× ×××)' : targetApp);
+  targetEl.textContent = '→ ' + (targetApp === 'therapy-hodaya' ? 'היומן של הודיה' : targetApp === 'diary-rinat' ? 'היומן שלנו (רינת/דניאל)' : targetApp);
   targetEl.style.display = 'block';
   
   // Set safety timeout: if redirect doesn't happen within 4 seconds, show manual fallback
   const safetyTimer = setTimeout(function(){
-    showError('<b>×××¤××¤× ×××¡× ××ª ×××¢××¨ ××××××××.</b><br>×××¥ ××× ××ª ×¢× ×××¤×ª××¨ ×××ª××× ×××¢××.', true);
+    showError('<b>הדפדפן חוסם את המעבר האוטומטי.</b><br>לחץ ידנית על הכפתור המתאים למעלה.', true);
   }, 4000);
   
   // Redirect after short visual delay
@@ -141,7 +141,7 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
       window.location.replace(destination);
     }catch(e){
       clearTimeout(safetyTimer);
-      showError('<b>×©×××× ×××¤× ××:</b> ' + (e.message || 'unknown'), true);
+      showError('<b>שגיאה בהפניה:</b> ' + (e.message || 'unknown'), true);
     }
   }, 1000);
 })();
