@@ -51,9 +51,9 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
   // Known apps mapped to their GitHub Pages URLs
   const APPS = {
     'Mm.ll': 'https://pinto1212121212-create.github.io/Mm.ll/',
-    'diary-hodaya': 'https://pinto1212121212-create.github.io/diary-hodaya/',
-    'hodaya-website': 'https://pinto1212121212-create.github.io/hodaya-website/',
-    'rb-prolaser': 'https://pinto1212121212-create.github.io/rb-prolaser/'
+    'therapy-hodaya': 'https://pinto1212121212-create.github.io/therapy-hodaya/',
+    'diary-rinat': 'https://pinto1212121212-create.github.io/diary-rinat/',
+    'Kk.osh': 'https://pinto1212121212-create.github.io/Kk.osh/'
   };
   
   // Parse URL params
@@ -82,9 +82,9 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
         });
         const url = APPS[name] + '?' + params.toString();
         const btn = document.createElement('a');
-        btn.className = name === 'diary-hodaya' ? 'btn purple' : 'btn';
+        btn.className = name === 'therapy-hodaya' ? 'btn purple' : 'btn';
         btn.href = url;
-        btn.textContent = '🔗 ' + (name === 'diary-hodaya' ? 'היומן של הודיה' : name === 'Mm.ll' ? 'היומן שלנו (רינת/דניאל)' : name);
+        btn.textContent = '🔗 ' + (name === 'therapy-hodaya' ? 'היומן של הודיה' : name === 'Mm.ll' ? 'היומן שלנו (רינת/דניאל)' : name);
         buttonsEl.appendChild(btn);
       }
     }
@@ -129,7 +129,7 @@ h1{color:#fbab20;font-size:24px;margin:0 0 8px}
   
   // Show target for 1 second, then redirect
   const targetEl = document.getElementById('target-url');
-  targetEl.textContent = '→ ' + (targetApp === 'diary-hodaya' ? 'היומן של הודיה' : targetApp === 'Mm.ll' ? 'היומן שלנו (רינת/דניאל)' : targetApp);
+  targetEl.textContent = '→ ' + (targetApp === 'therapy-hodaya' ? 'היומן של הודיה' : targetApp === 'Mm.ll' ? 'היומן שלנו (רינת/דניאל)' : targetApp);
   targetEl.style.display = 'block';
   
   // Set safety timeout: if redirect doesn't happen within 4 seconds, show manual fallback
